@@ -1,0 +1,63 @@
+idea:
+  title: Formal Proof of Gauss's Summation Formula (Axiom AXLE)
+  domain: mathematics_axiom
+  hypothesis: "For all natural numbers n, the sum 0 + 1 + 2 + ... + n equals n * (n\
+    \ + 1) / 2.\nThis identity can be formally verified in Lean 4 using Mathlib, checked\
+    \ via the\nhosted Axiom AXLE API (no local Lean toolchain). To avoid natural-number\
+    \ division\nin the induction, prove the equivalent doubling identity\n2 * (\u2211\
+    \ i \u2208 Finset.range (n+1), i) = n * (n + 1) first, then finish with omega.\n"
+  background:
+    description: "Gauss's summation formula is the classic introductory induction\
+      \ proof. It is a\ndeliberately small target whose purpose here is a smoke test\
+      \ of the\nmathematics_axiom domain: confirm the workspace is provisioned with\
+      \ the\naxiom-lean-prover skill, that AXLE_API_KEY is passed through to the agent,\
+      \ and\nthat proofs are machine-checked by axle_check.py (the cloud replacement\
+      \ for\n`lake build`). The doubling trick avoids \u2115 division during induction.\n"
+  methodology:
+    approach: Formal inductive proof in Lean 4 + Mathlib, verified via the Axiom AXLE
+      API
+    steps:
+    - Write proofs/Gauss.lean starting with `import Mathlib`
+    - "Define the sum as \u2211 i \u2208 Finset.range (n+1), i (Finset form)"
+    - "Prove the doubling lemma 2 * (\u2211 i \u2208 Finset.range (n+1), i) = n *\
+      \ (n+1) by induction (Finset.sum_range_succ + ring/omega)"
+    - "Derive the main theorem \u2211 i = n*(n+1)/2 from the doubling lemma using\
+      \ omega"
+    - 'Verify with: python .claude/skills/axiom-lean-prover/scripts/axle_check.py
+      --dir proofs/ (must report STATUS: COMPLETE, no sorry)'
+  constraints:
+    compute: cpu_only
+    time_limit: 1200
+    memory: 4GB
+  expected_outputs:
+  - type: proof
+    format: markdown
+    description: 'Complete Lean 4 proof with no sorry, verified by axle_check.py reporting
+
+      STATUS: COMPLETE. Should include the doubling lemma by induction and the
+
+      main theorem derived from it.
+
+      '
+  evaluation_criteria:
+  - 'axle_check.py --dir proofs/ reports STATUS: COMPLETE (exit 0), no INCOMPLETE_SORRY'
+  - "Main theorem stated as \u2211 i \u2208 Finset.range (n+1), i = n*(n+1)/2 over\
+    \ \u2115"
+  - "Doubling lemma 2 * (\u2211 i) = n*(n+1) proved by induction"
+  - Every .lean file starts with the full `import Mathlib`
+  metadata:
+    author: neurico
+    tags:
+    - number-theory
+    - lean4
+    - mathlib
+    - axiom-axle
+    - induction
+    - smoke-test
+    priority: medium
+    estimated_duration: 20 minutes
+    idea_id: formal_proof_of_gauss_s_summat_20260603_015845_03d3cc2e
+    created_at: '2026-06-03T01:58:45.975778'
+    status: submitted
+    github_repo_name: formal_proof_of_gauss_s_summat_20260603_015845_03d3cc2e
+    github_repo_url: https://github.com/AndrewRqy/formal_proof_of_gauss_s_summat_20260603_015845_03d3cc2e
