@@ -1,0 +1,11 @@
+{
+  "success": false,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "skipped": true
+    }
+  },
+  "work_dir": "C:\\Users\\relay\\Desktop\\School\\CHAI Project\\NeuriCo_Lean\\workspaces\\formal_proof_of_gauss_s_summat_20260603_015845_03d3cc2e",
+  "error": "[WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002"
+}

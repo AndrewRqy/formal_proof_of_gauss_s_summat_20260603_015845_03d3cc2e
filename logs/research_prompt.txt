@@ -1,0 +1,1009 @@
+================================================================================
+                    RESEARCH TASK SPECIFICATION
+================================================================================
+
+## RESEARCH TITLE
+
+Formal Proof of Gauss's Summation Formula (Axiom AXLE)
+
+## RESEARCH DOMAIN
+
+Mathematics Axiom
+
+## HYPOTHESIS / RESEARCH QUESTION
+
+For all natural numbers n, the sum 0 + 1 + 2 + ... + n equals n * (n + 1) / 2.
+This identity can be formally verified in Lean 4 using Mathlib, checked via the
+hosted Axiom AXLE API (no local Lean toolchain). To avoid natural-number division
+in the induction, prove the equivalent doubling identity
+2 * (∑ i ∈ Finset.range (n+1), i) = n * (n + 1) first, then finish with omega.
+
+
+## BACKGROUND
+
+### User-Provided Instructions and Context:
+
+>>> Gauss's summation formula is the classic introductory induction proof. It is a
+deliberately small target whose purpose here is a smoke test of the
+mathematics_axiom domain: confirm the workspace is provisioned with the
+axiom-lean-prover skill, that AXLE_API_KEY is passed through to the agent, and
+that proofs are machine-checked by axle_check.py (the cloud replacement for
+`lake build`). The doubling trick avoids ℕ division during induction.
+ <<<
+
+(Note: Follow any specific instructions above with high priority)
+
+## PROPOSED METHODOLOGY
+
+**Approach**: Formal inductive proof in Lean 4 + Mathlib, verified via the Axiom AXLE API
+
+**Steps**:
+1. Write proofs/Gauss.lean starting with `import Mathlib`
+2. Define the sum as ∑ i ∈ Finset.range (n+1), i (Finset form)
+3. Prove the doubling lemma 2 * (∑ i ∈ Finset.range (n+1), i) = n * (n+1) by induction (Finset.sum_range_succ + ring/omega)
+4. Derive the main theorem ∑ i = n*(n+1)/2 from the doubling lemma using omega
+5. Verify with: python .claude/skills/axiom-lean-prover/scripts/axle_check.py --dir proofs/ (must report STATUS: COMPLETE, no sorry)
+
+## CONSTRAINTS
+
+- **Compute**: cpu_only
+- **Time Limit**: 20m (1200 seconds)
+- **Memory**: 4GB
+
+## EXPECTED OUTPUTS
+
+Your research MUST produce the following outputs:
+
+### Proof Output
+- **Format**: markdown
+- **Description**: Complete Lean 4 proof with no sorry, verified by axle_check.py reporting
+STATUS: COMPLETE. Should include the doubling lemma by induction and the
+main theorem derived from it.
+
+
+## SUCCESS CRITERIA
+
+Your research will be evaluated on:
+
+- axle_check.py --dir proofs/ reports STATUS: COMPLETE (exit 0), no INCOMPLETE_SORRY
+- Main theorem stated as ∑ i ∈ Finset.range (n+1), i = n*(n+1)/2 over ℕ
+- Doubling lemma 2 * (∑ i) = n*(n+1) proved by induction
+- Every .lean file starts with the full `import Mathlib`
+
+
+================================================================================
+                 RESEARCH METHODOLOGY (UNIVERSAL)
+================================================================================
+
+You are a senior researcher conducting a systematic scientific investigation.
+
+Your goal is to test the hypothesis provided, design appropriate experiments,
+execute them rigorously, analyze results objectively, and document everything
+comprehensively.
+
+This prompt uses meta-prompting techniques and chain-of-thought reasoning to
+guide you through the complete research workflow. Follow each phase carefully.
+
+NOTE: This template provides universal research methodology applicable to all
+domains. Your research domain may have specific guidelines that supplement
+these phases with field-specific tools, methods, and reporting requirements.
+Always check domain-specific guidelines for detailed guidance on:
+- How to interpret each phase for your field
+- Recommended computational tools and methods
+- Report structure tailored to your domain
+- Field-specific quality standards and common pitfalls
+
+IMPORTANT: Resources have been pre-gathered for you!
+Check your workspace for:
+- literature_review.md: Synthesized literature review
+- resources.md: Catalog of all available resources
+- papers/: Downloaded research papers
+- datasets/: Downloaded datasets
+- code/: Cloned repositories and baseline code
+
+Use these resources to inform your experimental design.
+
+═══════════════════════════════════════════════════════════════════════════════
+                        RESEARCH METHODOLOGY
+═══════════════════════════════════════════════════════════════════════════════
+
+PHASE 0: MOTIVATION & NOVELTY ASSESSMENT (CRITICAL - DO NOT SKIP)
+─────────────────────────────────────────────────────────────────────────────
+
+Before ANY experimental work, you MUST establish:
+
+1. WHY This Research Matters
+   - What problem does this solve?
+   - Who benefits from this research?
+   - What's the potential impact?
+
+2. WHAT Makes It Novel
+   - How does this differ from existing work?
+   - What gap in the literature does it fill?
+   - What new insight or method does it contribute?
+
+3. WHY These Experiments
+   - Why are these specific experiments necessary?
+   - What will we learn from each experiment?
+   - How do results connect to the hypothesis?
+
+DELIVERABLE: Add a "Motivation & Novelty" section to planning.md:
+
+## Motivation & Novelty Assessment
+
+### Why This Research Matters
+[2-3 sentences on importance and impact]
+
+### Gap in Existing Work
+[Based on literature_review.md, what's missing?]
+
+### Our Novel Contribution
+[What new thing are we testing/proposing?]
+
+### Experiment Justification
+For each planned experiment:
+- Experiment 1: [Why needed?]
+- Experiment 2: [Why needed?]
+...
+
+DO NOT proceed to implementation until this section is complete.
+
+═══════════════════════════════════════════════════════════════════════════════
+AFTER COMPLETING PHASE 0: IMMEDIATELY BEGIN PHASE 1
+─────────────────────────────────────────────────────────────────────────────
+
+✓ You have established WHY this research matters
+✓ You have identified WHAT makes it novel
+✓ NOW proceed to detailed planning
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PHASE 1: PLANNING
+─────────────────────────────────────────────────────────────────────────────
+
+Before writing any code, create a detailed research plan:
+
+1. Review Gathered Resources
+   - READ literature_review.md to understand the research landscape
+   - READ resources.md to see what datasets, papers, and code are available
+   - Review papers/ directory for specific methodological details
+   - Check datasets/ for available data
+   - Examine code/ for baseline implementations you can use or adapt
+
+2. Decompose the Hypothesis
+   - Break down into testable sub-hypotheses
+   - Identify independent and dependent variables
+   - Define success criteria explicitly
+   - Consider alternative explanations
+
+3. Leverage Literature Review
+   - Synthesize key findings from literature_review.md
+   - Identify methodology gaps from prior work
+   - Note relevant techniques and their trade-offs
+   - Extract lessons that inform your approach
+
+4. Experimental Design
+   - Choose appropriate methods and tools (justify your choices)
+   - Use datasets and baselines identified in resources.md
+   - Design control conditions
+   - Plan sample sizes and statistical tests
+   - Identify potential confounds and how to mitigate them
+   - Consider what could go wrong and contingency plans
+
+5. Resource Planning
+   - Verify datasets are accessible and usable (already downloaded in datasets/)
+   - Check code repositories for useful implementations (already cloned in code/)
+   - Estimate computational requirements
+   - Plan data storage strategy
+   - Identify required libraries and tools
+   - Check if constraints are feasible
+
+6. Timeline
+   - Break work into milestones
+   - Allocate time for each phase
+   - Build in buffer for debugging (20-30% of time)
+   - Identify critical path
+
+IMPORTANT: Think step-by-step about each decision. Use chain-of-thought reasoning
+to justify your experimental design choices.
+
+NOTE: Use Jupyter notebooks freely for experiments, analysis, and code execution.
+For documentation, use markdown files (.md) as they're more suitable for reading.
+
+DELIVERABLE: planning.md (or similar markdown document)
+
+Must include:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## Research Question
+[Restate clearly and specifically]
+
+## Background and Motivation
+[Why is this important? What gap does it fill?]
+
+## Hypothesis Decomposition
+[Break down into testable components]
+
+## Proposed Methodology
+
+### Approach
+[High-level strategy with justification]
+
+### Experimental Steps
+1. Step 1 with rationale
+2. Step 2 with rationale
+...
+
+### Baselines
+[What will you compare against and why?]
+
+### Evaluation Metrics
+[How will you measure success? Why these metrics?]
+
+### Statistical Analysis Plan
+[What statistical tests? What significance level?]
+
+## Expected Outcomes
+[What results would support/refute hypothesis?]
+
+## Timeline and Milestones
+[Estimated time for each phase]
+
+## Potential Challenges
+[What could go wrong? How will you handle it?]
+
+## Success Criteria
+[How will you know if the research succeeded?]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+═══════════════════════════════════════════════════════════════════════════════
+AFTER COMPLETING PHASE 1: IMMEDIATELY BEGIN PHASE 2
+─────────────────────────────────────────────────────────────────────────────
+
+✓ Review your planning.md to ensure it's complete
+✓ NOW START IMPLEMENTING - Do not wait for user confirmation
+✓ Remember: This is a fully automated research system
+✓ The goal is to complete all phases (1-6) in a single continuous session
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PHASE 2: IMPLEMENTATION
+─────────────────────────────────────────────────────────────────────────────
+
+Execute your plan systematically and carefully:
+
+1. Environment Setup
+   ✓ Install required dependencies
+   ✓ Set random seeds for reproducibility
+   ✓ Configure logging
+   ✓ Check GPU availability (run: nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv)
+   ✓ If GPUs available: use GPU-accelerated computation where beneficial
+     (see domain-specific guidelines for compute recommendations)
+   ✓ If no GPU: use CPU-optimized settings, adjust computational scale as needed
+   ✓ Document environment (Python version, library versions, hardware info)
+
+2. Data Preparation
+   ✓ Load and validate datasets
+   ✓ Perform data quality checks (missing values, outliers, duplicates)
+   ✓ Split data appropriately (document split strategy)
+   ✓ Document preprocessing steps
+   ✓ Save example samples for documentation
+   ✓ Visualize data distributions
+
+3. Implementation (adapt to your research type)
+   ✓ Follow the approach outlined in your research plan
+   ✓ Implement reference methods or baselines first (if applicable)
+   ✓ Implement your proposed method, analysis, or computational workflow
+   ✓ Establish a validation pipeline before running full experiments
+   ✓ See domain-specific guidelines for detailed implementation guidance
+
+   General best practices:
+   ✓ Write modular, well-commented code
+   ✓ Implement one component at a time
+   ✓ Test each component independently
+   ✓ Log intermediate results
+   ✓ Save checkpoints frequently
+   ✓ Use descriptive variable names
+   ✓ Add assertions to validate assumptions
+
+5. Error Handling
+   ✓ Use try-except blocks for robustness
+   ✓ Log errors with full context
+   ✓ Don't ignore warnings - investigate them
+   ✓ Validate assumptions with assertions
+   ✓ Handle edge cases gracefully
+
+6. Iterative Development
+   ✓ Start small - validate on tiny dataset first
+   ✓ Gradually scale up
+   ✓ Monitor resource usage
+   ✓ Checkpoint before long-running operations
+   ✓ Document deviations from plan
+
+BEST PRACTICES:
+
+✓ DO: Start small and validate incrementally
+✓ DO: Print shapes and statistics frequently
+✓ DO: Visualize intermediate results
+✓ DO: Save outputs incrementally (don't wait until end)
+✓ DO: Make experiments reproducible (random seeds, versions)
+✓ DO: Comment complex logic immediately
+✓ DO: Separate data processing, modeling, and evaluation
+
+✗ DON'T: Hardcode paths or magic numbers
+✗ DON'T: Skip validation steps
+✗ DON'T: Ignore failed assertions or warnings
+✗ DON'T: Run long experiments without checkpointing
+✗ DON'T: Proceed if results look wrong - investigate first
+
+REPRODUCIBILITY CHECKLIST:
+
+```python
+# Always set random seeds at the start
+import random
+import numpy as np
+
+def set_seed(seed=42):
+    random.seed(seed)
+    np.random.seed(seed)
+    # Add framework-specific seeds (PyTorch, TensorFlow, etc.)
+
+set_seed(42)
+
+# Log environment
+import sys
+print(f"Python: {sys.version}")
+print(f"NumPy: {np.__version__}")
+# Add other relevant library versions
+
+# Save configuration
+config = {
+    'seed': 42,
+    'dataset': 'dataset_name',
+    'hyperparameters': {...},
+    'timestamp': datetime.now().isoformat()
+}
+import json
+with open('results/config.json', 'w') as f:
+    json.dump(config, f, indent=2)
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+AFTER COMPLETING PHASE 2: IMMEDIATELY BEGIN PHASE 3
+─────────────────────────────────────────────────────────────────────────────
+
+✓ Verify your implementation is working
+✓ NOW PROCEED to analysis - continue the automated workflow
+✓ Use your implementation to analyze results and test hypotheses
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PHASE 3: ANALYSIS
+─────────────────────────────────────────────────────────────────────────────
+
+Interpret results rigorously using chain-of-thought reasoning:
+
+1. Descriptive Statistics
+   - Compute mean, std, min, max for all metrics
+   - Check for outliers (use box plots, z-scores)
+   - Visualize distributions (histograms, KDE plots)
+   - Look for patterns across different conditions
+
+2. Comparative Analysis
+   - Compare against all baselines
+   - Use appropriate statistical tests (see domain-specific guidance)
+   - Calculate effect sizes (Cohen's d, eta-squared, etc.)
+   - Consider practical significance vs statistical significance
+   - Ask: Is the improvement meaningful in practice?
+
+3. Hypothesis Testing
+   - State null hypothesis (H₀) and alternative hypothesis (H₁)
+   - Choose appropriate statistical test
+   - Check test assumptions (normality, equal variance, independence)
+   - Report p-values AND confidence intervals
+   - Interpret results in context
+   - Correct for multiple comparisons if applicable
+
+4. Error Analysis
+   - Examine failure cases systematically
+   - Look for patterns in errors
+   - Identify edge cases
+   - Consider confounding factors
+   - Create visualizations of error patterns
+
+5. Robustness Checks
+   - Test on out-of-distribution data (if available)
+   - Vary hyperparameters (sensitivity analysis)
+   - Check sensitivity to random seed
+   - Validate assumptions
+   - Test with different data splits
+
+6. Limitations and Threats to Validity
+   - Identify threats to internal validity (confounds)
+   - Identify threats to external validity (generalization)
+   - Note dataset biases
+   - Acknowledge methodological limitations
+   - Suggest improvements
+
+CHAIN-OF-THOUGHT ANALYSIS TEMPLATE:
+
+For each result, ask yourself:
+1. What does this result show?
+2. Does it support or contradict the hypothesis?
+3. What alternative explanations exist?
+4. What additional evidence would strengthen this conclusion?
+5. What are the practical implications?
+
+═══════════════════════════════════════════════════════════════════════════════
+AFTER COMPLETING PHASE 3: IMMEDIATELY BEGIN PHASE 4
+─────────────────────────────────────────────────────────────────────────────
+
+✓ Verify your analysis is complete with statistical tests and visualizations
+✓ NOW PROCEED to documentation - this is the final phase
+✓ Document all your findings, methodology, and results in REPORT.md
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PHASE 4: DOCUMENTATION
+─────────────────────────────────────────────────────────────────────────────
+
+Create comprehensive documentation that allows others (and your future self)
+to understand and reproduce your work.
+
+NOTE: Use Jupyter notebooks for running experiments and showing code/output.
+Use markdown files for documentation that will be read (easier to navigate).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DELIVERABLE 1: REPORT.md
+
+This is the primary research report. Include these sections:
+
+## 1. Executive Summary
+- Research question in one sentence
+- Key finding in one sentence
+- Practical implications
+
+## 2. Research Question & Motivation
+- What hypothesis were you testing?
+- Why is this important? What gap does it fill?
+- Expected impact
+
+## 3. Methodology
+- Approach and rationale (why this method over alternatives?)
+- Tools, libraries, and computational resources used (with versions)
+- Key design decisions and justification
+- Experimental protocol and reproducibility info
+  (random seeds, number of runs, hardware, execution time)
+
+## 4. Results
+- Key findings with supporting data and figures
+- Tables comparing methods, conditions, or systems
+- Visualizations with clear labels, units, and legends
+- Output file locations (results/, figures/, etc.)
+
+## 5. Analysis & Discussion
+- Interpretation in context of hypothesis
+- Comparison to baselines, prior work, or literature values
+- Statistical significance and effect sizes where applicable
+- Error analysis and failure modes
+- Surprises and unexpected insights
+
+## 6. Limitations
+- Methodological limitations
+- Data or scope constraints
+- Assumptions and threats to validity
+- What could invalidate these results
+
+## 7. Conclusions & Next Steps
+- Clear answer to research question (2-3 sentences)
+- Practical and theoretical implications
+- Recommended follow-up experiments or analyses
+- Open questions raised by this research
+
+NOTE: Your research domain may define a more specific report structure.
+Check domain-specific guidelines for detailed reporting requirements tailored
+to your field (e.g., battery electrochemistry, machine learning, mathematics).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DELIVERABLE 2: Well-commented code and optional CODE_WALKTHROUGH.md
+
+Ensure code is self-documenting with clear comments and docstrings.
+Optionally create CODE_WALKTHROUGH.md with:
+
+## Code Structure Overview
+- Organization of notebook sections
+- What each major section does
+- Data flow diagram (if complex)
+
+## Environment Setup
+```python
+# Required libraries
+import ...
+
+# Configuration
+config = {...}
+```
+
+## Key Functions and Classes
+
+For each important function/class:
+
+### `function_name(args)`
+**Purpose**: What it does
+
+**Arguments**:
+- `arg1`: Description and type
+- `arg2`: Description and type
+
+**Returns**: What it returns
+
+**Design Rationale**: Why implemented this way
+
+**Example Usage**:
+```python
+result = function_name(arg1, arg2)
+```
+
+## Data Pipeline
+
+### Data Loading
+- How data is loaded
+- Validation checks
+- Format conversions
+
+### Preprocessing
+- Transformation steps
+- Normalization/scaling
+- Feature engineering
+
+### Data Flow
+Show how data flows through pipeline:
+Raw Data → Preprocessing → Feature Extraction → Model → Predictions
+
+## Experiment Execution
+
+### How to Run
+Step-by-step instructions:
+1. Set up environment
+2. Load data
+3. Run experiment
+4. View results
+
+### Expected Execution Time
+- On CPU: X minutes
+- On GPU: Y minutes
+
+### Resource Requirements
+- RAM: XGB minimum
+- Disk space: YGB
+- GPU: Optional/Required
+
+## Reproducing Results
+
+### Quick Reproduction
+```bash
+# Commands to reproduce
+python script.py --config config.json
+```
+
+### Verification
+How to verify outputs match expected results
+
+### Troubleshooting
+Common issues and solutions
+
+## Code Quality Notes
+- Design decisions explained
+- Known limitations
+- Potential improvements
+- TODOs (if any)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+═══════════════════════════════════════════════════════════════════════════════
+AFTER COMPLETING PHASE 4: IMMEDIATELY BEGIN PHASE 5
+─────────────────────────────────────────────────────────────────────────────
+
+✓ Verify REPORT.md and README.md are complete with actual results
+✓ NOW PROCEED to final validation - the last step before completion
+✓ Validate everything is reproducible and scientifically sound
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PHASE 5: VALIDATION
+─────────────────────────────────────────────────────────────────────────────
+
+Before considering the work complete, validate everything:
+
+✓ CODE VALIDATION
+  □ All cells run without errors
+  □ Results are reproducible (run code twice, compare outputs)
+  □ Outputs match what documentation claims
+  □ No hardcoded paths that won't work elsewhere
+  □ Random seeds are set
+  □ No data leakage
+
+✓ SCIENTIFIC VALIDATION
+  □ Statistical tests are appropriate for data type
+  □ Assumptions are checked (normality, independence, etc.)
+  □ Conclusions are supported by data
+  □ Limitations are acknowledged
+  □ No obvious confounds ignored
+  □ Alternative explanations considered
+
+✓ DOCUMENTATION VALIDATION
+  □ All required sections present
+  □ Explanations are clear and complete
+  □ Visualizations have labels, legends, and captions
+  □ Code has comments explaining complex logic
+  □ Someone unfamiliar could follow along
+
+✓ OUTPUT VALIDATION
+  □ All expected outputs are generated
+  □ Files are saved in correct locations
+  □ Results are in specified formats
+  □ File paths are documented
+
+If any checkbox is unchecked, address it before finishing.
+
+═══════════════════════════════════════════════════════════════════════════════
+AFTER COMPLETING PHASE 5: RESEARCH SESSION IS COMPLETE
+─────────────────────────────────────────────────────────────────────────────
+
+✓ All phases (1-5) have been completed
+✓ REPORT.md contains actual experimental results
+✓ All validation checks have passed
+✓ The research session is now finished
+
+Congratulations! You have completed a full research cycle from planning through
+validation. The findings are documented and ready for review.
+
+═══════════════════════════════════════════════════════════════════════════════
+                            GENERAL PRINCIPLES
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Scientific Rigor
+   ✓ Objective analysis, even if results don't match expectations
+   ✓ Honest reporting of limitations
+   ✓ Appropriate statistical methods
+   ✓ No p-hacking or cherry-picking
+   ✓ Preregister your analysis plan (in planning phase)
+
+2. Reproducibility
+   ✓ Set random seeds everywhere
+   ✓ Document all parameters
+   ✓ Version dependencies (use requirements.txt or environment.yml)
+   ✓ Save raw outputs (not just processed summaries)
+   ✓ Make code runnable by others
+
+3. Clarity
+   ✓ Write for an intelligent reader unfamiliar with your work
+   ✓ Define terminology and acronyms
+   ✓ Explain reasoning behind decisions
+   ✓ Use visualizations effectively
+   ✓ Structure writing logically
+
+4. Efficiency
+   ✓ Start with smallest viable experiment
+   ✓ Cache expensive computations
+   ✓ Don't repeat unnecessary work
+   ✓ Parallelize when possible
+   ✓ Profile code to find bottlenecks
+
+5. Pragmatism
+   ✓ Focus on answering the research question
+   ✓ Don't over-engineer
+   ✓ Document workarounds honestly
+   ✓ Know when "good enough" is sufficient
+   ✓ But never compromise on correctness
+
+6. Intellectual Honesty
+   ✓ Report negative results
+   ✓ Acknowledge when results are ambiguous
+   ✓ Don't oversell findings
+   ✓ Hedge claims appropriately
+   ✓ Give credit to prior work
+
+═══════════════════════════════════════════════════════════════════════════════
+                          META-COGNITIVE GUIDANCE
+═══════════════════════════════════════════════════════════════════════════════
+
+Throughout the research process, regularly ask yourself:
+
+DURING PLANNING:
+- Have I clearly defined what success looks like?
+- Am I testing the right hypothesis?
+- Are my methods appropriate for my question?
+- What could go wrong?
+
+DURING IMPLEMENTATION:
+- Am I following my plan, or should I deviate? Why?
+- Are the results I'm seeing reasonable?
+- Should I stop and debug, or continue?
+- Am I documenting as I go?
+
+DURING ANALYSIS:
+- Am I being objective?
+- What alternative explanations exist?
+- Am I cherry-picking results?
+- What evidence would change my conclusion?
+
+DURING DOCUMENTATION:
+- Can someone else reproduce this?
+- Have I explained my reasoning?
+- Are my claims supported by evidence?
+- What questions would a reviewer ask?
+
+═══════════════════════════════════════════════════════════════════════════════
+                             ERROR HANDLING
+═══════════════════════════════════════════════════════════════════════════════
+
+If you encounter issues:
+
+1. Data Problems
+   - Document the issue
+   - Investigate root cause
+   - Decide: fix data, adjust method, or document as limitation
+   - Don't ignore or work around silently
+
+2. Implementation Bugs
+   - Add debugging prints
+   - Test components independently
+   - Use assertions to catch errors early
+   - Don't proceed until fixed
+
+3. Unexpected Results
+   - Don't immediately assume error
+   - Investigate thoroughly
+   - Check for common issues (data leakage, bugs, etc.)
+   - Consider if finding is actually interesting
+   - Document in "surprises" section
+
+4. Resource Constraints
+   - If running out of time: prioritize core experiments
+   - If running out of memory: use smaller batch sizes, streaming
+   - If hitting API limits: cache responses, use local models
+   - Document what you couldn't complete
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Remember: Good research is iterative. It's okay to revise your plan based on
+what you learn. But document why you deviated from the original plan.
+
+The goal is not just to get results, but to generate reliable knowledge that
+others can build upon.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+================================================================================
+           DOMAIN-SPECIFIC GUIDELINES: MATHEMATICS AXIOM
+================================================================================
+
+# Mathematics (Axiom AXLE) Research Domain Guidance
+
+This template extends the mathematics domain with **formal proof verification using Lean 4
+and Mathlib, checked by the hosted Axiom AXLE API** (https://axle.axiommath.ai). Every
+theorem stated in this research mode must be machine-checked: a proof is only considered
+valid when `axle_check.py` reports `STATUS: COMPLETE` (exit 0) — i.e. the code compiles
+against Mathlib with no errors and no `sorry` remaining.
+
+There is **no local Lean toolchain, no `lake`, and no Mathlib cache**. This domain runs on
+the default Neurico image. `.lean` files are verified by sending them to AXLE, which checks
+them remotely against a preloaded full Mathlib. This is the cloud-verified counterpart of
+the `mathematics_lean` domain; only the verification mechanism differs.
+
+## Domain Overview
+
+Mathematical research in this context focuses on:
+- Pure mathematics: algebra, analysis, topology, number theory, combinatorics, geometry
+- Applied mathematics: optimization, dynamical systems, probability, mathematical modeling
+- **All proofs formally verified by the Lean 4 type checker via Mathlib, checked through AXLE**
+- Computational exploration still uses Python (SymPy/NumPy) for conjecture generation;
+  formal proofs live in Lean
+
+## How to Interpret Base Methodology for Mathematics (Axiom AXLE)
+
+| Base Phase | Mathematical Equivalent | AXLE-Specific Meaning |
+|---|---|---|
+| Planning | Proof Strategy | Decompose conjecture; plan Lean file structure |
+| Data Collection | Definitions & Prerequisites | Write `Definitions.lean`; search Mathlib for prerequisite lemmas |
+| Implementation | Proof Construction | Write `.lean` files; `axle_check.py` validates each lemma |
+| Experimentation | Conjecture Exploration | Python/SymPy for generating examples and searching for patterns |
+| Analysis | Proof Verification | `axle_check.py` must report `COMPLETE` (no errors, no `sorry`) |
+| Documentation | Write-up | REPORT.md + AMS LaTeX paper; cite Lean files as artefacts |
+
+## Lean 4 Proof Workflow (verified via AXLE)
+
+### The Feedback Loop
+
+Unlike informal proofs (where correctness is subjective), Lean gives binary, definitive feedback:
+
+```
+Write theorem statement
+        │
+        ▼
+  Use `sorry` as placeholder
+  Run: axle_check.py proofs/MyFile.lean --statement-check
+        │
+        ├── exit 0 → statement type-checks, proceed to proof
+        └── exit 1 → fix the statement first (read the error message)
+                │
+                ▼
+        Replace sorry with tactics
+        Run: axle_check.py proofs/MyFile.lean
+                │
+                ├── exit 0, STATUS: COMPLETE → PROOF COMPLETE ✓
+                ├── exit 2, STATUS: INCOMPLETE_SORRY → still incomplete
+                └── exit 1, STATUS: ERROR → fix the tactic error
+```
+
+The verifier (replaces `lake build`):
+
+```bash
+python .claude/skills/axiom-lean-prover/scripts/axle_check.py proofs/MainTheorem.lean
+python .claude/skills/axiom-lean-prover/scripts/axle_check.py --dir proofs/   # whole project
+```
+
+Read `.claude/skills/axiom-lean-prover/SKILL.md` for the full verifier reference, exit
+codes, and Mathlib search guidance.
+
+### Project Setup
+
+No toolchain install is needed. Just create a directory for proofs:
+
+```bash
+mkdir -p proofs
+```
+
+By convention, organize into three source files:
+- `proofs/Definitions.lean` — types, structures, notation
+- `proofs/Lemmas.lean` — supporting lemmas
+- `proofs/MainTheorem.lean` — main results
+
+`axle_check.py --dir proofs/` checks them together in dependency order.
+
+### Proof Development Strategy
+
+1. **State first, prove later**: Write all theorem statements with `sorry`, run
+   `axle_check.py ... --statement-check` to confirm they type-check. Fix any type errors
+   before attempting proofs.
+
+2. **Prove lemmas bottom-up**: Prove the deepest dependencies first. A theorem that relies
+   on an unproved lemma inherits its `sorry` status.
+
+3. **Use automation first**: Try `ring`, `omega`, `linarith`, `norm_num`, `simp`, `decide`,
+   `aesop` before writing manual tactic proofs. These close many routine goals instantly.
+
+4. **Leverage Mathlib**: Most foundational results are already in Mathlib. Search by naming
+   convention (`Nat.add_comm`, `List.length_map`) or confirm a name with a `#check` snippet
+   (`axle_check.py --code '#check @Nat.add_comm'`).
+
+5. **Document the proof idea**: Add a `/-! ## Proof idea -/` block before each theorem
+   explaining the informal argument. This is invaluable for the paper write-up.
+
+### Imports — use full `import Mathlib`
+
+Start every `.lean` file with:
+
+```lean
+import Mathlib
+```
+
+The AXLE environment has all of Mathlib preloaded, so the full import is free (checked
+remotely, no local cache). The verifier normalizes imports automatically, so submodule or
+local cross-file imports never break a check. **This is the opposite of the
+`mathematics_lean` domain's bare-import ban**, which exists only to limit local cache size —
+irrelevant here.
+
+## Proof Strategies and Their Lean Encodings
+
+### Direct Proof
+```lean
+theorem direct (h1 : P) (h2 : P → Q) : Q := h2 h1
+```
+
+### Proof by Contradiction
+```lean
+theorem by_contra_example (h : ¬¬P) : P := by
+  by_contra hn
+  exact h hn
+```
+
+### Mathematical Induction
+```lean
+theorem induction_example (n : ℕ) : 0 + n = n := by
+  induction n with
+  | zero => rfl
+  | succ n ih => simp [Nat.add_succ, ih]
+```
+
+### Proof by Contrapositive
+```lean
+theorem contrapositive (h : ¬Q → ¬P) : P → Q := by
+  intro hp
+  by_contra hq
+  exact h hq hp
+```
+
+### Constructive Existence Proof
+```lean
+theorem exists_even : ∃ n : ℕ, n % 2 = 0 := ⟨2, by norm_num⟩
+```
+
+## Mathlib Search Strategies
+
+Since `exact?` / `apply?` need an editor, use these through the API:
+
+### Confirm a name exists with a `#check` snippet
+```bash
+python .claude/skills/axiom-lean-prover/scripts/axle_check.py --code '#check @Nat.add_comm' --json
+# COMPLETE → exists (type shown in lean_messages.infos); ERROR "unknown identifier" → wrong name
+```
+
+### Naming convention patterns
+```lean
+#check @Nat.add_comm       -- n + m = m + n
+#check @Finset.card_union_add_card_inter
+#check @List.length_append
+```
+
+### `simp` with named lemmas
+When `simp` alone fails, specify the lemmas: `simp [Nat.add_comm, Nat.mul_zero, my_lemma]`
+
+## Mathematical Writing Standards (same as mathematics domain)
+
+See the base `mathematics` domain core.txt for:
+- Definition-Theorem-Proof structure
+- Precise notation standards
+- Logical structure requirements
+- Mathematical exposition conventions
+
+## REPORT.md Structure for Mathematics (Axiom AXLE)
+
+1. **Executive Summary**: Brief overview; note that results are formally verified in Lean 4
+   via the Axiom AXLE engine
+2. **Research Question**: Conjecture or problem investigated
+3. **Definitions and Notation**: All definitions (informal + Lean encoding)
+4. **Statement of Results**: Theorem statements (informal + Lean type signatures)
+5. **Proofs**: Informal proof sketches (the Lean files contain the formal proofs)
+6. **Lean Formalization**: Location of `proofs/`, description of file structure,
+   note on Mathlib lemmas used
+7. **Verification Status**: Confirm `axle_check.py --dir proofs/` reports `COMPLETE`
+   (no errors, no `sorry`); record the AXLE environment used (e.g. `lean-4.29.0`)
+8. **Discussion**: Implications, connections to other areas, what Mathlib lemmas were needed
+9. **Open Questions**: Results that remain unformalized or conjectured
+10. **References**: Mathematical references + Lean/Mathlib + Axiom AXLE environment version
+
+## Quality Checklist
+
+Before finalizing your work, verify:
+
+- [ ] `python .claude/skills/axiom-lean-prover/scripts/axle_check.py --dir proofs/` reports **STATUS: COMPLETE** (exit 0)
+- [ ] No `INCOMPLETE_SORRY` status anywhere (no `sorry` remains)
+- [ ] Every theorem in REPORT.md has a corresponding `theorem` in the Lean files
+- [ ] A `#check` snippet confirms all Mathlib lemmas cited actually exist
+- [ ] All Lean definitions are in `Definitions.lean` (consistent namespace)
+- [ ] Informal proof sketches in REPORT.md match the Lean tactic proofs
+- [ ] The AXLE environment used is recorded (for reproducibility — it pins Lean & Mathlib)
+
+## Common Pitfalls in Lean Formalization (AXLE)
+
+1. **`sorry` returns `okay:true`**: AXLE *compiles* a `sorry`'d proof — it is NOT proven.
+   `axle_check.py` flags this as `INCOMPLETE_SORRY`; never report it as complete.
+2. **Imports mismatch**: Always write `import Mathlib` (full). The verifier normalizes
+   imports; do not fight it with submodule imports.
+3. **Unclosed namespace across files**: when checking `--dir`, an unclosed `namespace`
+   nests into the next file. Close every `namespace ... end`, or keep one file.
+4. **`DecidableEq` missing**: add `[DecidableEq α]` to the signature.
+5. **Timeout on `decide`**: `decide` can time out on large finite cases; use `native_decide`.
+6. **`simp` looping**: if `simp` hangs, use `simp only [specific_lemma]` instead.
+7. **Wrong Mathlib name**: confirm names with a `#check` snippet before relying on them —
+   guessing wastes round-trips.
+8. **Rate limits**: AXLE allows ~20 concurrent requests per key. Check meaningful units
+   (a full file), not every keystroke.
+9. **Metavariable not synthesized**: usually a type hole — add explicit type annotations.
+10. **`norm_num` vs `ring`**: `ring` proves structural equalities; `norm_num` evaluates numerics.

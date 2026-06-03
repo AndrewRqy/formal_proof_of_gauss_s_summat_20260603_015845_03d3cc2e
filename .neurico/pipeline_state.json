@@ -1,0 +1,25 @@
+{
+  "created_at": "2026-06-03T01:59:50.321285",
+  "stages": {
+    "resource_finder": {
+      "status": "completed",
+      "completed_at": "2026-06-03T01:59:50.321659",
+      "success": true,
+      "outputs": {
+        "skipped": true
+      }
+    },
+    "experiment_runner": {
+      "status": "failed",
+      "started_at": "2026-06-03T01:59:50.322103",
+      "completed_at": "2026-06-03T01:59:50.347056",
+      "success": false,
+      "outputs": {
+        "success": false,
+        "error": "[WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002"
+      }
+    }
+  },
+  "current_stage": null,
+  "completed": false
+}
